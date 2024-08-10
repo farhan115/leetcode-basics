@@ -1,0 +1,218 @@
+A modified binary search can be used to solve various problems where a simple binary search needs some customization. Here are a few examples of modified binary search in Python:
+1. Finding the First Occurrence of an Element
+
+Instead of just finding any occurrence of an element, sometimes you need to find the first occurrence in a sorted array.
+
+python
+
+def first_occurrence(nums, target):
+    left, right = 0, len(nums) - 1
+    result = -1
+
+    while left <= right:
+        mid = (left + right) // 2
+
+        if nums[mid] == target:
+            result = mid
+            right = mid - 1  # Continue searching in the left half
+        elif nums[mid] < target:
+            left = mid + 1
+        else:
+            right = mid - 1
+
+    return result
+
+nums = [1, 2, 2, 2, 3, 4, 5]
+target = 2
+print(first_occurrence(nums, target))  # Output: 1
+
+2. Finding the Last Occurrence of an Element
+
+Similarly, you might need to find the last occurrence of an element in a sorted array.
+
+python
+
+def last_occurrence(nums, target):
+    left, right = 0, len(nums) - 1
+    result = -1
+
+    while left <= right:
+        mid = (left + right) // 2
+
+        if nums[mid] == target:
+            result = mid
+            left = mid + 1  # Continue searching in the right half
+        elif nums[mid] < target:
+            left = mid + 1
+        else:
+            right = mid - 1
+
+    return result
+
+nums = [1, 2, 2, 2, 3, 4, 5]
+target = 2
+print(last_occurrence(nums, target))  # Output: 3
+
+3. Finding the Smallest Element Greater than Target
+
+Given a sorted array, find the smallest element greater than a given target.
+
+python
+
+def smallest_element_greater(nums, target):
+    left, right = 0, len(nums) - 1
+    result = -1
+
+    while left <= right:
+        mid = (left + right) // 2
+
+        if nums[mid] > target:
+            result = mid
+            right = mid - 1
+        else:
+            left = mid + 1
+
+    return result if result != -1 else -1
+
+nums = [1, 3, 5, 7, 9]
+target = 6
+print(smallest_element_greater(nums, target))  # Output: 3 (element 7)
+
+4. Finding the Peak Element in an Unsorted Array
+
+A peak element is an element that is greater than its neighbors. The array may have multiple peaks; the goal is to find any of them.
+
+python
+
+def find_peak_element(nums):
+    left, right = 0, len(nums) - 1
+
+    while left < right:
+        mid = (left + right) // 2
+
+        if nums[mid] < nums[mid + 1]:
+            left = mid + 1
+        else:
+            right = mid
+
+    return left
+
+nums = [1, 2, 3, 1]
+print(find_peak_element(nums))  # Output: 2 (index of peak element 3)
+
+5. Finding the Minimum Element in a Rotated Sorted Array
+
+A rotated sorted array is a sorted array that has been rotated at some pivot. The task is to find the minimum element in this array.
+
+python
+
+def find_min_in_rotated_array(nums):
+    left, right = 0, len(nums) - 1
+
+    while left < right:
+        mid = (left + right) // 2
+
+        if nums[mid] > nums[right]:
+            left = mid + 1
+        else:
+            right = mid
+
+    return nums[left]
+
+nums = [4, 5, 6, 7, 0, 1, 2]
+print(find_min_in_rotated_array(nums))  # Output: 0
+
+6. Finding the Rotation Count in a Rotated Sorted Array
+
+This is another variation where you need to find out how many times a sorted array has been rotated.
+
+python
+
+def find_rotation_count(nums):
+    left, right = 0, len(nums) - 1
+
+    while left <= right:
+        if nums[left] <= nums[right]:  # Case when the array is already sorted
+            return left
+
+        mid = (left + right) // 2
+        next_ = (mid + 1) % len(nums)
+        prev = (mid - 1 + len(nums)) % len(nums)
+
+        if nums[mid] <= nums[next_] and nums[mid] <= nums[prev]:
+            return mid
+        elif nums[mid] <= nums[right]:
+            right = mid - 1
+        else:
+            left = mid + 1
+
+    return -1
+
+nums = [15, 18, 2, 3, 6, 12]
+print(find_rotation_count(nums))  # Output: 2 (rotated 2 times)
+
+7. Searching in a 2D Matrix
+
+Given a matrix that is sorted row-wise and column-wise, find a target value.
+
+python
+
+def search_matrix(matrix, target):
+    if not matrix:
+        return False
+
+    rows, cols = len(matrix), len(matrix[0])
+    left, right = 0, rows * cols - 1
+
+    while left <= right:
+        mid = (left + right) // 2
+        mid_value = matrix[mid // cols][mid % cols]
+
+        if mid_value == target:
+            return True
+        elif mid_value < target:
+            left = mid + 1
+        else:
+            right = mid - 1
+
+    return False
+
+matrix = [
+    [1, 3, 5, 7],
+    [10, 11, 16, 20],
+    [23, 30, 34, 50]
+]
+target = 3
+print(search_matrix(matrix, target))  # Output: True
+
+8. Finding the Square Root of a Number
+
+Using binary search to find the integer part of the square root of a number.
+
+python
+
+def square_root(x):
+    if x < 2:
+        return x
+
+    left, right = 2, x // 2
+
+    while left <= right:
+        mid = (left + right) // 2
+        square = mid * mid
+
+        if square == x:
+            return mid
+        elif square < x:
+            left = mid + 1
+        else:
+            right = mid - 1
+
+    return right
+
+num = 8
+print(square_root(num))  # Output: 2
+
+Summary
+
+Modified binary search techniques are versatile and can be adapted to solve a wide range of problems, such as searching in rotated arrays, finding peaks, and determining specific conditions in sorted or partially sorted arrays. Each problem requires a slight modification to the standard binary search to meet the unique requirements of the problem.
