@@ -1,0 +1,289 @@
+The sliding window technique is a commonly used approach to solve problems that involve arrays or lists. It involves maintaining a window of elements in the array, moving it across the array, and adjusting the window's contents or size as needed.
+
+Here are some examples that illustrate how the sliding window technique can be implemented in Python:
+1. Maximum Sum Subarray of Size K
+
+Find the maximum sum of any contiguous subarray of size k.
+
+python
+
+def max_sum_subarray(arr, k):
+    max_sum = 0
+    window_sum = 0
+    start = 0
+
+    for end in range(len(arr)):
+        window_sum += arr[end]
+
+        if end >= k - 1:
+            max_sum = max(max_sum, window_sum)
+            window_sum -= arr[start]
+            start += 1
+
+    return max_sum
+
+arr = [2, 1, 5, 1, 3, 2]
+k = 3
+print(max_sum_subarray(arr, k))  # Output: 9
+
+2. Smallest Subarray with Given Sum
+
+Given an array of positive numbers and a positive number S, find the length of the smallest contiguous subarray whose sum is greater than or equal to S. Return 0 if no such subarray exists.
+
+python
+
+def smallest_subarray_with_given_sum(arr, s):
+    window_sum = 0
+    min_length = float('inf')
+    start = 0
+
+    for end in range(len(arr)):
+        window_sum += arr[end]
+
+        while window_sum >= s:
+            min_length = min(min_length, end - start + 1)
+            window_sum -= arr[start]
+            start += 1
+
+    return min_length if min_length != float('inf') else 0
+
+arr = [2, 1, 5, 2, 3, 2]
+s = 7
+print(smallest_subarray_with_given_sum(arr, s))  # Output: 2
+
+3. Longest Substring with K Distinct Characters
+
+Given a string, find the length of the longest substring with at most k distinct characters.
+
+python
+
+def longest_substring_with_k_distinct(s, k):
+    start = 0
+    max_length = 0
+    char_frequency = {}
+
+    for end in range(len(s)):
+        char = s[end]
+        char_frequency[char] = char_frequency.get(char, 0) + 1
+
+        while len(char_frequency) > k:
+            left_char = s[start]
+            char_frequency[left_char] -= 1
+            if char_frequency[left_char] == 0:
+                del char_frequency[left_char]
+            start += 1
+
+        max_length = max(max_length, end - start + 1)
+
+    return max_length
+
+s = "araaci"
+k = 2
+print(longest_substring_with_k_distinct(s, k))  # Output: 4
+
+4. Maximum Sum of Subarray with at Most K Distinct Characters
+
+Given a string, find the maximum sum of any subarray with at most k distinct characters, where the sum is defined as the sum of ASCII values of characters in the substring.
+
+python
+
+def max_sum_subarray_with_k_distinct(s, k):
+    start = 0
+    max_sum = 0
+    window_sum = 0
+    char_frequency = {}
+
+    for end in range(len(s)):
+        char = s[end]
+        window_sum += ord(char)
+        char_frequency[char] = char_frequency.get(char, 0) + 1
+
+        while len(char_frequency) > k:
+            left_char = s[start]
+            window_sum -= ord(left_char)
+            char_frequency[left_char] -= 1
+            if char_frequency[left_char] == 0:
+                del char_frequency[left_char]
+            start += 1
+
+        max_sum = max(max_sum, window_sum)
+
+    return max_sum
+
+s = "araaci"
+k = 2
+print(max_sum_subarray_with_k_distinct(s, k))  # Output: 311
+
+5. Maximum of All Subarrays of Size K
+
+Given an array, find the maximum value of each subarray of size k.
+
+python
+
+from collections import deque
+
+def max_in_subarrays_of_size_k(arr, k):
+    deq = deque()
+    result = []
+
+    for i in range(len(arr)):
+        while deq and arr[deq[-1]] < arr[i]:
+            deq.pop()
+
+        deq.append(i)
+
+        if deq[0] == i - k:
+            deq.popleft()
+
+        if i >= k - 1:
+            result.append(arr[deq[0]])
+
+    return result
+
+arr = [10, 5, 2, 7, 8, 7]
+k = 3
+print(max_in_subarrays_of_size_k(arr, k))  # Output: [10, 7, 8, 8]
+
+6. Longest Substring without Repeating Characters
+
+Given a string, find the length of the longest substring without repeating characters.
+
+python
+
+def longest_substring_without_repeating_chars(s):
+    start = 0
+    max_length = 0
+    char_index_map = {}
+
+    for end in range(len(s)):
+        char = s[end]
+        if char in char_index_map:
+            start = max(start, char_index_map[char] + 1)
+
+        char_index_map[char] = end
+        max_length = max(max_length, end - start + 1)
+
+    return max_length
+
+s = "abcabcbb"
+print(longest_substring_without_repeating_chars(s))  # Output: 3
+
+7. Longest Substring with Same Letters After Replacement
+
+Given a string with lowercase letters only, if you are allowed to replace no more than k letters with any letter, find the length of the longest substring having the same letters after replacement.
+
+python
+
+def length_of_longest_substring_with_replacement(s, k):
+    start = 0
+    max_length = 0
+    max_repeat_letter_count = 0
+    frequency_map = {}
+
+    for end in range(len(s)):
+        char = s[end]
+        frequency_map[char] = frequency_map.get(char, 0) + 1
+        max_repeat_letter_count = max(max_repeat_letter_count, frequency_map[char])
+
+        if (end - start + 1 - max_repeat_letter_count) > k:
+            left_char = s[start]
+            frequency_map[left_char] -= 1
+            start += 1
+
+        max_length = max(max_length, end - start + 1)
+
+    return max_length
+
+s = "aabccbb"
+k = 2
+print(length_of_longest_substring_with_replacement(s, k))  # Output: 5
+
+8. Permutation in String
+
+Given a smaller string s1 and a bigger string s2, find out if s1's permutation is a substring of s2.
+
+python
+
+def check_inclusion(s1, s2):
+    s1_count = [0] * 26
+    s2_count = [0] * 26
+
+    for char in s1:
+        s1_count[ord(char) - ord('a')] += 1
+
+    for i in range(len(s2)):
+        s2_count[ord(s2[i]) - ord('a')] += 1
+
+        if i >= len(s1):
+            s2_count[ord(s2[i - len(s1)]) - ord('a')] -= 1
+
+        if s1_count == s2_count:
+            return True
+
+    return False
+
+s1 = "ab"
+s2 = "eidbaooo"
+print(check_inclusion(s1, s2))  # Output: True
+
+9. Find All Anagrams in a String
+
+Given a string s and a non-empty string p, find all the start indices of p's anagrams in s.
+
+python
+
+def find_anagrams(s, p):
+    result = []
+    p_count = [0] * 26
+    s_count = [0] * 26
+
+    for char in p:
+        p_count[ord(char) - ord('a')] += 1
+
+    for i in range(len(s)):
+        s_count[ord(s[i]) - ord('a')] += 1
+
+        if i >= len(p):
+            s_count[ord(s[i - len(p)]) - ord('a')] -= 1
+
+        if p_count == s_count:
+            result.append(i - len(p) + 1)
+
+    return result
+
+s = "cbaebabacd"
+p = "abc"
+print(find_anagrams(s, p))  # Output: [0, 6]
+
+10. Maximum Number of Vowels in a Substring of Given Length
+
+Given a string s and an integer k, return the maximum number of vowel letters in any substring of s with length k.
+
+python
+
+def max_vowels(s, k):
+    vowels = set('aeiou')
+    max_vowel_count = 0
+    current_vowel_count = 0
+    start = 0
+
+    for end in range(len(s)):
+        if s[end] in vowels:
+            current_vowel_count += 1
+
+        if end >= k:
+            if s[start] in vowels:
+                current_vowel_count -= 1
+            start += 1
+
+        max_vowel_count = max(max_vowel_count, current_vowel_count)
+
+    return max_vowel_count
+
+s = "abciiidef"
+k = 3
+print(max_vowels(s, k))  # Output: 3
+
+Summary
+
+The sliding window technique is extremely powerful and versatile for solving problems that involve subarrays or substrings. It efficiently reduces the time complexity by maintaining a window that expands or contracts as necessary, allowing for efficient computation of results in linear time.
